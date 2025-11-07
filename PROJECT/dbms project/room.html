@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Room - BookBuddy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+       
+        :root {
+            --primary-dark: #333;
+            --primary-green: #4CAF50;
+            --primary-orange: #f56e14;
+            --text-light: white;
+            --text-dark: #333;
+            --bg-light: #f9f9f9; 
+            --card-bg: #ffffff;
+            --border-color: #ddd;
+            --card-shadow: rgba(0, 0, 0, 0.1);
+            --offer-border: #f56e14;
+            --offer-badge-bg: #ef5350;
+            --aqua: aqua;
+            --error-red: #d9534f;
+            --secondary-gray: #ecf0f1;
+        }
+
+       
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInFromLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideInFromRight {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .home_head {
+            background-color: var(--primary-dark);
+            padding: 15px 0;
+            width: 100%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            animation: fadeIn 0.8s ease-out;
+        }
+        .home_header {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .home_heading h1 {
+            color: var(--text-light);
+            font-size: 1.8em;
+        }
+        .home_heading .buddy {
+            color: var(--primary-orange);
+        }
+        .home_nav {
+            animation: slideInFromRight 0.7s ease-out;
+        }
+        .home_nav a {
+            color: var(--text-light);
+            margin-left: 25px;
+            font-weight: 500;
+            transition: color 0.3s ease, transform 0.2s ease;
+        }
+        .home_nav a:hover {
+            color: var(--aqua);
+            transform: translateY(-2px);
+        }
+        .home_nav .btn {
+            background-color: var(--primary-orange);
+            padding: 10px 20px; 
+            border-radius: 5px;
+            font-size: 1em;
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        }
+        .home_nav .btn:hover {
+            transform: translateY(-3px); 
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        
+        .room_container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+            flex-grow: 1;
+        }
+        
+        
+        .booking_form_section {
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards 0.4s;
+            flex: 2;
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px var(--card-shadow);
+            transition: transform 0.3s ease;
+        }
+        
+        .form_title {
+            color: var(--primary-dark);
+            margin-bottom: 25px;
+            font-size: 1.8em;
+        }
+
+        .form_group {
+            margin-bottom: 20px;
+        }
+
+        .form_group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .form_group input,
+        .form_group select,
+        .form_group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        .form_group input:focus,
+        .form_group select:focus,
+        .form_group textarea:focus {
+            outline: none;
+            border-color: var(--primary-orange);
+        }
+
+        .form_row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .form_row .form_group {
+            flex: 1;
+        }
+
+        .btn-main {
+            background-color: var(--primary-orange);
+            color: var(--text-light);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            min-width: 150px;
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        }
+
+        .btn-main:hover {
+            transform: translateY(-3px); 
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-food {
+            background-color: var(--primary-green);
+            color: var(--text-light);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            min-width: 150px;
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        }
+
+        .btn-food:hover {
+            transform: translateY(-3px); 
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .price_summary_card {
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards 0.6s;
+            flex: 1;
+            background-color: var(--secondary-gray);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px var(--card-shadow);
+            position: sticky;
+            top: 80px;
+            transition: transform 0.3s ease;
+        }
+
+        .summary_title {
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+            font-size: 1.4em;
+            text-align: center;
+        }
+
+        .hotel_info_summary {
+            background-color: var(--card-bg);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .hotel_name_summary {
+            font-weight: bold;
+            color: var(--primary-dark);
+            margin-bottom: 5px;
+        }
+
+        .hotel_location_summary {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .price_breakdown {
+            margin-bottom: 20px;
+        }
+
+        .price_item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 5px 0;
+        }
+
+        .price_item.total {
+            border-top: 2px solid var(--primary-orange);
+            padding-top: 10px;
+            font-weight: bold;
+            font-size: 1.1em;
+            color: var(--primary-dark);
+        }
+
+        .food_summary {
+            background-color: var(--card-bg);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .food_item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        footer {
+            background-color: var(--primary-dark);
+            color: var(--text-light);
+            padding: 15px 0;
+            text-align: center;
+            margin-top: auto;
+        }
+        footer a {
+            color: var(--primary-orange);
+            margin: 0 5px;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 992px) {
+            .room_container {
+                flex-direction: column;
+                gap: 20px;
+            }
+            .price_summary_card {
+                position: static;
+            }
+            .form_row {
+                flex-direction: column;
+            }
+        }
+        
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 15px 20px;
+  border-radius: 5px;
+  color: white;
+  z-index: 10000;
+  animation: slideIn 0.3s ease-out;
+}
+
+.notification.success { background-color: #4CAF50; }
+.notification.error { background-color: #f44336; }
+.notification.info { background-color: #2196F3; }
+
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.modal {
+  display: block;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 500px;
+  border-radius: 10px;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover { color: #000; }
+
+.booking-card {
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.food-item {
+  border: 1px solid #eee;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 5px;
+}
+
+.quantity-controls {
+  display: inline-block;
+  margin-left: 10px;
+}
+
+.quantity-controls button {
+  width: 30px;
+  height: 30px;
+  border: 1px solid #ddd;
+  background-color: #f5f5f5;
+  cursor: pointer;
+}
+
+.quantity-controls span {
+  display: inline-block;
+  width: 30px;
+  text-align: center;
+  margin: 0 5px;
+}
+
+    </style>
+</head>
+<body>
+    <header class="home_head">
+        <div class="home_header">
+            <div class="home_heading">
+                <h1>Book<span class="buddy">Buddy</span></h1>
+            </div>
+            <nav class="home_nav">
+            <div class="home_links">
+                    <a href="index.html">Home</a>
+                    <a href="home.html">Hotels</a>
+                    <a href="#" class="btn">Login</a>
+                </div>
+                </nav>
+        </div>
+    </header>
+    <script>
+      
+      (function(){
+        try {
+          const u = JSON.parse(localStorage.getItem('user') || 'null');
+          const role = (u && u.role ? String(u.role) : 'Customer').toLowerCase();
+          if (role === 'manager') { window.location.href = 'manage.html'; return; }
+          if (role === 'staff' || role === 'employee') { window.location.href = 'staff.html'; return; }
+        } catch(_) {}
+      })();
+    </script>
+
+    <main class="room_container">
+        
+        <section class="booking_form_section">
+            <h2 class="form_title">Complete Your Booking</h2>
+            
+            <form id="bookingForm">
+                <div class="form_row">
+                    <div class="form_group">
+                        <label for="firstName">First Name *</label>
+                        <input type="text" id="firstName" name="firstName" required>
+                    </div>
+                    <div class="form_group">
+                        <label for="lastName">Last Name *</label>
+                        <input type="text" id="lastName" name="lastName" required>
+                    </div>
+                </div>
+                
+                <div class="form_row">
+                    <div class="form_group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" name="email" required>
+                        </div>
+                    <div class="form_group">
+                        <label for="phone">Phone Number *</label>
+                        <input type="tel" id="phone" name="phone" required>
+                        </div>
+                    </div>
+
+                <div class="form_row">
+                    <div class="form_group">
+                        <label for="checkIn">Check-in Date *</label>
+                        <input type="date" id="checkIn" name="checkIn" required>
+                    </div>
+                    <div class="form_group">
+                        <label for="checkOut">Check-out Date *</label>
+                        <input type="date" id="checkOut" name="checkOut" required>
+                    </div>
+                </div>
+
+                <div class="form_row">
+                    <div class="form_group">
+                        <label for="guests">Number of Guests *</label>
+                        <select id="guests" name="guests" required>
+                            <option value="1">1 Guest</option>
+                            <option value="2">2 Guests</option>
+                            <option value="3">3 Guests</option>
+                            <option value="4">4 Guests</option>
+                            <option value="5">5+ Guests</option>
+                        </select>
+                </div>
+                    <div class="form_group">
+                        <label for="roomType">Room Type *</label>
+                        <select id="roomType" name="roomType" required>
+                            <option value="standard">Standard Room</option>
+                            <option value="deluxe">Deluxe Room</option>
+                            <option value="suite">Suite</option>
+                            <option value="presidential">Presidential Suite</option>
+                            </select>
+                    </div>
+                </div>
+
+                <div class="form_group">
+                    <label for="specialRequests">Special Requests</label>
+                    <textarea id="specialRequests" name="specialRequests" rows="3" placeholder="Any special requirements or requests..."></textarea>
+                </div>
+
+                <div style="display: flex; gap: 15px; margin-top: 30px;">
+                    <button type="button" class="btn-food" onclick="openFoodMenu()">
+                        <i class="fas fa-utensils"></i> Add Food
+                    </button>
+                    <button type="submit" id="completeBookingBtn" class="btn-main">
+                        <i class="fas fa-credit-card"></i> Complete Booking
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        
+        <aside class="price_summary_card">
+            <h3 class="summary_title">Booking Summary</h3>
+            
+            <div class="hotel_info_summary" id="hotelInfoSummary">
+                
+            </div>
+
+            <div class="price_breakdown">
+                <div class="price_item">
+                    <span>Room Price (per night):</span>
+                    <span id="roomPrice">₹0</span>
+                </div>
+                <div class="price_item">
+                    <span>Number of Nights:</span>
+                    <span id="nights">0</span>
+                </div>
+                <div class="price_item">
+                    <span>Subtotal:</span>
+                    <span id="subtotal">₹0</span>
+                </div>
+                <div class="price_item">
+                    <span>Tax (18%):</span>
+                    <span id="tax">₹0</span>
+                </div>
+                <div class="price_item total">
+                    <span>Total:</span>
+                    <span id="total">₹0</span>
+                </div>
+            </div>
+            
+            <div class="food_summary" id="foodSummary" style="display: none;">
+                <h4 style="margin-bottom: 10px; color: var(--primary-dark);">Food Order</h4>
+                <div id="foodItems">
+                    
+                </div>
+                <div class="price_item total">
+                    <span>Food Total:</span>
+                    <span id="foodTotal">₹0</span>
+                </div>
+            </div>
+
+            <div class="price_item total" style="margin-top: 20px; font-size: 1.2em;">
+                <span>Grand Total:</span>
+                <span id="grandTotal">₹0</span>
+            </div>
+        </aside>
+    </main>
+
+    <footer>
+        <div>
+            &copy; 2025 BookBuddy. All rights reserved. | 
+            <a href="#">Privacy Policy</a> | 
+            <a href="#">Terms of Service</a>
+        </div>
+    </footer>
+
+    <script src="js/api-client.js"></script>
+    <script>
+       
+        const hotels = {
+            "taj-coromandel": {
+                name: "Taj Coromandel",
+                location: "Anna Salai, Chennai",
+                basePrice: 8500,
+                roomTypes: {
+                    standard: 8500,
+                    deluxe: 12000,
+                    suite: 18000,
+                    presidential: 25000
+                }
+            },
+            "itc-hotel": {
+                name: "ITC Grand Chola",
+                location: "Guindy, Chennai",
+                basePrice: 7200,
+                roomTypes: {
+                    standard: 7200,
+                    deluxe: 10000,
+                    suite: 15000,
+                    presidential: 22000
+                }
+            },
+            "leela-palace": {
+                name: "The Leela Palace",
+                location: "Adyar, Chennai",
+                basePrice: 9800,
+                roomTypes: {
+                    standard: 9800,
+                    deluxe: 14000,
+                    suite: 20000,
+                    presidential: 30000
+                }
+            },
+            "radisson-blu": {
+                name: "Radisson Blu",
+                location: "Egmore, Chennai",
+                basePrice: 5500,
+                roomTypes: {
+                    standard: 5500,
+                    deluxe: 7500,
+                    suite: 12000,
+                    presidential: 18000
+                }
+            },
+            "novotel": {
+                name: "Novotel Chennai",
+                location: "OMR, Chennai",
+                basePrice: 4200,
+                roomTypes: {
+                    standard: 4200,
+                    deluxe: 6000,
+                    suite: 9000,
+                    presidential: 14000
+                }
+            },
+            "sheraton": {
+                name: "Sheraton Grand",
+                location: "T. Nagar, Chennai",
+                basePrice: 6800,
+                roomTypes: {
+                    standard: 6800,
+                    deluxe: 9500,
+                    suite: 14000,
+                    presidential: 20000
+                }
+            },
+            "taj-connemara": {
+                name: "Taj Connemara",
+                location: "Mount Road, Chennai",
+                basePrice: 5900,
+                roomTypes: {
+                    standard: 5900,
+                    deluxe: 8500,
+                    suite: 12000,
+                    presidential: 18000
+                }
+            },
+            "park-hotel": {
+                name: "The Park",
+                location: "Anna Salai, Chennai",
+                basePrice: 4500,
+                roomTypes: {
+                    standard: 4500,
+                    deluxe: 6500,
+                    suite: 9500,
+                    presidential: 14000
+                }
+            },
+            "trident": {
+                name: "Trident Chennai",
+                location: "OMR, Chennai",
+                basePrice: 3800,
+                roomTypes: {
+                    standard: 3800,
+                    deluxe: 5500,
+                    suite: 8000,
+                    presidential: 12000
+                }
+            },
+            "ramada": {
+                name: "Ramada Chennai",
+                location: "Egmore, Chennai",
+                basePrice: 3200,
+                roomTypes: {
+                    standard: 3200,
+                    deluxe: 4500,
+                    suite: 6500,
+                    presidential: 9500
+                }
+            },
+            "holiday-inn": {
+                name: "Holiday Inn Express",
+                location: "OMR, Chennai",
+                basePrice: 2800,
+                roomTypes: {
+                    standard: 2800,
+                    deluxe: 3800,
+                    suite: 5500,
+                    presidential: 8000
+                }
+            }
+        };
+
+        let currentHotel = null;
+        let backendHotels = [];
+        let backendHotelId = null;
+        let foodOrder = [];
+        let roomPrice = 0;
+        let nights = 0;
+
+        async function initializePage() {
+            
+            if (!api || !api.token) {
+                alert('Please login to continue booking');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                const sel = JSON.parse(sessionStorage.getItem('selectedHotel') || 'null');
+                if (sel && sel.name) {
+                    selectedHotel = sel; 
+                    updateHotelInfo();
+                }
+            } catch {}
+          
+            try {
+                api.getHotels().then(resp => {
+                    const arr = resp && Array.isArray(resp.data) ? resp.data : [];
+                    backendHotels = arr;
+                    if (selectedHotel && selectedHotel.name) {
+                        const match = arr.find(h => (h.name||'').toLowerCase() === String(selectedHotel.name||'').toLowerCase());
+                        backendHotelId = match ? match.hotel_id : null;
+                    }
+                    
+                    if (!backendHotelId && arr.length > 0) {
+                        backendHotelId = arr[0].hotel_id;
+                        if (!selectedHotel) {
+                            selectedHotel = { name: arr[0].name, location: arr[0].location, lowestRate: arr[0].base_price_per_night };
+                            updateHotelInfo();
+                        }
+                    }
+                }).catch(()=>{});
+            } catch {}
+
+            try {
+                const me = await api.request('/auth/me');
+                const user = me && me.data && me.data.user ? me.data.user : null;
+                if (user) {
+                    const nameParts = String(user.name || '').trim().split(' ');
+                    document.getElementById('firstName').value = nameParts.shift() || '';
+                    document.getElementById('lastName').value = nameParts.join(' ') || '';
+                    document.getElementById('email').value = user.email || '';
+                    document.getElementById('phone').value = user.phone_number || '';
+                }
+            } catch (e) {
+                console.warn('Autofill /auth/me failed', e.message);
+            }
+            setupEventListeners();
+            loadFoodOrder();
+        }
+
+        function updateHotelInfo() {
+            const hotelInfoDiv = document.getElementById('hotelInfoSummary');
+            hotelInfoDiv.innerHTML = `
+                <div class="hotel_name_summary">${selectedHotel.name || ''}</div>
+                <div class="hotel_location_summary">${selectedHotel.location || ''}</div>
+            `;
+        }
+
+        function setupEventListeners() {
+            
+            document.getElementById('checkIn').addEventListener('change', calculatePrice);
+            document.getElementById('checkOut').addEventListener('change', calculatePrice);
+            
+            
+            document.getElementById('roomType').addEventListener('change', calculatePrice);
+            
+            
+            document.getElementById('bookingForm').addEventListener('submit', handleBooking);
+        }
+
+    
+        function calculatePrice() {
+            const checkIn = new Date(document.getElementById('checkIn').value);
+            const checkOut = new Date(document.getElementById('checkOut').value);
+            const roomType = document.getElementById('roomType').value;
+            
+            if (checkIn && checkOut && roomType) {
+                nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
+                if (nights > 0) {
+                    
+                    const match = backendHotels.find(h => h.hotel_id === backendHotelId);
+                    const backendBase = match ? Number(match.base_price_per_night || 0) : 0;
+                    const localTypePrice = selectedHotel && selectedHotel.roomTypes ? Number(selectedHotel.roomTypes[roomType] || 0) : 0;
+                    const localBase = Number(localTypePrice || selectedHotel?.lowestRate || selectedHotel?.basePrice || 0);
+                    roomPrice = backendBase > 0 ? backendBase : localBase;
+                    updatePriceDisplay();
+                }
+            }
+            toggleCompleteBookingButton();
+        }
+
+        function updatePriceDisplay() {
+            const subtotal = roomPrice * nights;
+            const tax = subtotal * 0.18;
+            const foodTotal = foodOrder.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const grandTotal = subtotal + tax + foodTotal;
+
+            document.getElementById('roomPrice').textContent = `₹${roomPrice.toLocaleString()}`;
+            document.getElementById('nights').textContent = nights;
+            document.getElementById('subtotal').textContent = `₹${subtotal.toLocaleString()}`;
+            document.getElementById('tax').textContent = `₹${tax.toLocaleString()}`;
+            document.getElementById('total').textContent = `₹${(subtotal + tax).toLocaleString()}`;
+            document.getElementById('foodTotal').textContent = `₹${foodTotal.toLocaleString()}`;
+            document.getElementById('grandTotal').textContent = `₹${grandTotal.toLocaleString()}`;
+        }
+
+       
+        function hasValidDates(){
+            const ci = document.getElementById('checkIn').value;
+            const co = document.getElementById('checkOut').value;
+            if (!ci || !co) return false;
+            const d1 = new Date(ci);
+            const d2 = new Date(co);
+            return (d2 - d1) > 0;
+        }
+        function toggleCompleteBookingButton(){
+            const btn = document.getElementById('completeBookingBtn');
+            if (!btn) return;
+            const hasFood = Array.isArray(foodOrder) && foodOrder.length > 0;
+            const okDates = hasValidDates();
+            const enabled = hasFood && okDates;
+            btn.disabled = !enabled;
+            btn.style.opacity = enabled ? '1' : '0.6';
+            btn.style.cursor = enabled ? 'pointer' : 'not-allowed';
+            const baseLabel = '<i class="fas fa-credit-card"></i> ' + (enabled ? 'Complete Booking' : (hasFood ? 'Select valid dates' : 'Add Food to Continue'));
+            btn.innerHTML = baseLabel;
+        }
+
+        function openFoodMenu() {
+            window.location.href = 'food.html';
+        }
+
+        let lastBookingId = null;
+        async function handleBooking(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            if (!backendHotelId) {
+                showNotification('Resolving hotel list... please wait and try again.', 'info');
+                return;
+            }
+
+           
+            try {
+                const saved = localStorage.getItem('foodOrder');
+                const items = saved ? JSON.parse(saved) : [];
+                if (!Array.isArray(items) || items.length === 0) {
+                    showNotification('Please add food before completing your booking.', 'error');
+                    setTimeout(() => { window.location.href = 'food.html'; }, 800);
+                    return;
+                }
+            } catch (_) {
+                showNotification('Please add food before completing your booking.', 'error');
+                setTimeout(() => { window.location.href = 'food.html'; }, 800);
+                return;
+            }
+
+            const checkIn = formData.get('checkIn');
+            const checkOut = formData.get('checkOut');
+
+            let food_items = [];
+            try {
+                const menu = await api.request('/food');
+                const allFood = (menu && menu.data) ? menu.data : [];
+                food_items = (foodOrder || [])
+                  .filter(it => Number(it.quantity) > 0)
+                  .map(it => {
+                    const byId = it.food_item_id ? it : null;
+                    if (byId) return { food_item_id: Number(byId.food_item_id), quantity: Number(byId.quantity), price: Number(it.price||0) };
+                    const match = allFood.find(f => (f.name||'').toLowerCase() === String(it.name||'').toLowerCase());
+                    return match ? { food_item_id: Number(match.food_item_id), quantity: Number(it.quantity), price: Number(it.price||0) } : null;
+                  })
+                  .filter(Boolean);
+            } catch (e) {
+                console.warn('Fetching food list failed, proceeding without food items');
+            }
+
+            try {
+                const payload = {
+                    hotel_id: backendHotelId,
+                    check_in_date: checkIn,
+                    check_out_date: checkOut
+                };
+                
+                try {
+                    const selRoom = sessionStorage.getItem('selectedRoomNumber');
+                    if (selRoom) payload.room_number = selRoom;
+                } catch (_) {}
+                if (food_items.length) payload.food_items = food_items;
+
+                const resp = await api.request('/bookings/create', {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+
+                const totalPayable = resp && resp.booking ? (resp.booking.total_payable || (resp.booking.room_total + (resp.booking.food_total||0))) : 0;
+                lastBookingId = resp && resp.booking ? resp.booking.booking_id : null;
+               
+                try { sessionStorage.removeItem('selectedRoomNumber'); } catch (_) {}
+                showNotification('Booking created! Proceeding to payment...', 'success');
+                processPayment(totalPayable || 0, lastBookingId);
+            } catch (err) {
+                console.error('Booking failed:', err);
+                showNotification(err.message || 'Booking failed', 'error');
+            }
+        }
+
+    
+        function loadFoodOrder() {
+            const savedFoodOrder = localStorage.getItem('foodOrder');
+            if (savedFoodOrder) {
+                foodOrder = JSON.parse(savedFoodOrder);
+                updateFoodSummary();
+            }
+            toggleCompleteBookingButton();
+        }
+
+       
+        function updateFoodSummary() {
+            const foodSummary = document.getElementById('foodSummary');
+            const foodItems = document.getElementById('foodItems');
+            
+            if (foodOrder.length > 0) {
+                foodSummary.style.display = 'block';
+                foodItems.innerHTML = foodOrder.map(item => `
+                    <div class="food_item">
+                        <span>${item.name} x${item.quantity}</span>
+                        <span>₹${(item.price * item.quantity).toLocaleString()}</span>
+                    </div>
+                `).join('');
+                updatePriceDisplay();
+            } else {
+                foodSummary.style.display = 'none';
+                document.getElementById('foodItems').innerHTML = '';
+                updatePriceDisplay();
+            }
+            toggleCompleteBookingButton();
+        }
+
+      
+        function sendBookingEmail(bookingData) {
+            const emailContent = `
+                Dear ${bookingData.guest.firstName} ${bookingData.guest.lastName},
+                
+                Thank you for your booking with Book Buddy!
+                
+                Booking Details:
+                - Hotel: ${bookingData.hotel}
+                - Check-in: ${bookingData.dates.checkIn}
+                - Check-out: ${bookingData.dates.checkOut}
+                - Room Type: ${bookingData.room.type}
+                - Number of Guests: ${bookingData.room.guests}
+                - Room Price: ₹${bookingData.pricing.subtotal.toLocaleString()}
+                - Tax (18%): ₹${bookingData.pricing.tax.toLocaleString()}
+                - Food Order: ₹${bookingData.pricing.foodTotal.toLocaleString()}
+                - Total Amount: ₹${bookingData.pricing.total.toLocaleString()}
+                
+                We look forward to welcoming you!
+                
+                Best regards,
+                Book Buddy Team
+            `;
+            
+            console.log('Email sent:', emailContent);
+            
+            showNotification('Booking confirmation email sent!', 'success');
+        }
+
+        function processPayment(amount, bookingId) {
+            const paymentMethods = [
+                { name: 'Google Pay', icon: 'fab fa-google-pay', color: '#4285F4' },
+                { name: 'PhonePe', icon: 'fas fa-mobile-alt', color: '#5F259F' },
+                { name: 'Paytm', icon: 'fas fa-wallet', color: '#00BAF2' },
+                { name: 'UPI', icon: 'fas fa-qrcode', color: '#6C5CE7' },
+                { name: 'Credit Card', icon: 'fas fa-credit-card', color: '#00D4AA' }
+            ];
+            
+            const selectedMethod = paymentMethods[Math.floor(Math.random() * paymentMethods.length)];
+            
+            showPaymentModal(selectedMethod, amount, bookingId);
+        }
+
+        async function markPaid(bookingId, amount) {
+            if (!bookingId) return;
+            try {
+                await api.request('/payments/mock/mark-paid', {
+                    method: 'POST',
+                    body: JSON.stringify({ bookingId, amount })
+                });
+             
+                try {
+                    const raw = localStorage.getItem('paidBookings') || '{}';
+                    const map = JSON.parse(raw);
+                    map[String(bookingId)] = true;
+                    localStorage.setItem('paidBookings', JSON.stringify(map));
+                } catch (_) {}
+            } catch (e) {
+                console.warn('Mock mark-paid failed:', e.message);
+             
+                try {
+                    const raw = localStorage.getItem('paidBookings') || '{}';
+                    const map = JSON.parse(raw);
+                    map[String(bookingId)] = true;
+                    localStorage.setItem('paidBookings', JSON.stringify(map));
+                } catch (_) {}
+            }
+        }
+
+        function showPaymentModal(paymentMethod, amount, bookingId) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0,0,0,0.5);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 10000;
+            `;
+            
+            modal.innerHTML = `
+                <div style="
+                    background: white;
+                    padding: 30px;
+                    border-radius: 15px;
+                    text-align: center;
+                    max-width: 400px;
+                    width: 90%;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                ">
+                    <div style="font-size: 3em; color: ${paymentMethod.color}; margin-bottom: 20px;">
+                        <i class="${paymentMethod.icon}"></i>
+                    </div>
+                    <h2 style="margin-bottom: 10px;">Redirecting to ${paymentMethod.name}</h2>
+                    <p style="color: #666; margin-bottom: 20px;">Processing payment of ₹${amount.toLocaleString()}</p>
+                    <div style="
+                        width: 40px;
+                        height: 40px;
+                        border: 4px solid #f3f3f3;
+                        border-top: 4px solid ${paymentMethod.color};
+                        border-radius: 50%;
+                        animation: spin 1s linear infinite;
+                        margin: 0 auto 20px;
+                    "></div>
+                    <p style="font-size: 0.9em; color: #888;">Please complete payment in the ${paymentMethod.name} app...</p>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            setTimeout(() => {
+                modal.innerHTML = `
+                    <div style="
+                        background: white;
+                        padding: 30px;
+                        border-radius: 15px;
+                        text-align: center;
+                        max-width: 400px;
+                        width: 90%;
+                        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                    ">
+                        <div style="font-size: 3em; color: #4CAF50; margin-bottom: 20px;">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h2 style="margin-bottom: 10px; color: #4CAF50;">Payment Successful!</h2>
+                        <p style="color: #666; margin-bottom: 20px;">Your booking has been confirmed</p>
+                        <button id="continueBtn" style="
+                            background: #4CAF50;
+                            color: white;
+                            border: none;
+                            padding: 10px 20px;
+                            border-radius: 5px;
+                            cursor: pointer;
+                        ">Continue</button>
+                    </div>
+                `;
+                const btn = modal.querySelector('#continueBtn');
+                if (btn) {
+                    btn.addEventListener('click', async () => {
+                        await markPaid(bookingId, amount);
+                        if (document.body.contains(modal)) document.body.removeChild(modal);
+                      
+                        window.location.href = 'book.html';
+                    });
+                }
+            }, 3000);
+        }
+
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background-color: ${type === 'success' ? '#4CAF50' : '#f44336'};
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                z-index: 10000;
+                animation: slideInFromRight 0.3s ease-out;
+                max-width: 300px;
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideInFromRight 0.3s ease-out reverse';
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initializePage();
+            loadFoodOrder();
+            toggleCompleteBookingButton();
+    
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('checkIn').min = today;
+            document.getElementById('checkOut').min = today;
+        });
+    </script>
+    
+</body>
+</html>

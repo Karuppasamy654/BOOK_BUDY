@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore Hotels - BookBuddy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+       
+        :root {
+            --primary-dark: #333;
+            --primary-green: #4CAF50;
+            --primary-orange: #f56e14;
+            --text-light: white;
+            --text-dark: #333;
+            --bg-light: #f9f9f9; 
+            --card-bg: #ffffff;
+            --border-color: #ddd;
+            --card-shadow: rgba(0, 0, 0, 0.1);
+            --offer-border: #f56e14;
+            --offer-badge-bg: #ef5350;
+            --aqua: aqua;
+            --error-red: #d9534f;
+            --secondary-gray: #ecf0f1;
+        }
+
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInFromLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideInFromRight {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 5px var(--primary-orange); }
+            50% { box-shadow: 0 0 15px var(--primary-orange), 0 0 25px rgba(245, 110, 20, 0.5); }
+            100% { box-shadow: 0 0 5px var(--primary-orange); }
+        }
+
+        
+        .home_head {
+            background-color: var(--primary-dark);
+            padding: 15px 0;
+            width: 100%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            animation: fadeIn 0.8s ease-out;
+        }
+        .home_header {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .home_heading h1 {
+            color: var(--text-light);
+            font-size: 1.8em;
+        }
+        .home_heading .buddy {
+            color: var(--primary-orange);
+        }
+        .home_nav {
+            animation: slideInFromRight 0.7s ease-out;
+        }
+        .home_nav a {
+            color: var(--text-light);
+            margin-left: 25px;
+            font-weight: 500;
+            transition: color 0.3s ease, transform 0.2s ease;
+        }
+        .home_nav a:hover {
+            color: var(--aqua);
+            transform: translateY(-2px);
+        }
+        .home_nav .btn {
+            background-color: var(--primary-orange);
+            padding: 10px 20px; 
+            border-radius: 5px;
+            font-size: 1em;
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        }
+        .home_nav .btn:hover {
+            transform: translateY(-3px); 
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+       
+        .home_main {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            flex-grow: 1;
+        }
+
+        .page_title {
+            text-align: center;
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out forwards 0.3s;
+        }
+        .page_title h1 {
+            font-size: 2.5em;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+        }
+        .page_title p {
+            font-size: 1.2em;
+            color: #666;
+        }
+
+       
+        .hotel_slider {
+            display: flex;
+            overflow-x: auto;
+            gap: 20px;
+            margin-bottom: 50px;
+            padding: 20px 0;
+            scroll-behavior: smooth;
+        }
+
+        .hotel_slider::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .hotel_slider::-webkit-scrollbar-track {
+            background: var(--secondary-gray);
+            border-radius: 4px;
+        }
+
+        .hotel_slider::-webkit-scrollbar-thumb {
+            background: var(--primary-orange);
+            border-radius: 4px;
+        }
+
+        .hotel_slider::-webkit-scrollbar-thumb:hover {
+            background: #c5570d;
+        }
+
+        .hotel_card {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            background-color: var(--card-bg);
+            position: relative; 
+            cursor: pointer;
+            opacity: 0;
+            min-width: 300px;
+            flex-shrink: 0;
+        }
+
+        .hotel_card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.25);
+        }
+
+        .hotel_card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .hotel_card:hover img {
+            transform: scale(1.05);
+        }
+
+        .hotel_info {
+            padding: 20px;
+        }
+
+        .hotel_name {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--primary-dark);
+        }
+
+        .hotel_location {
+            color: #666;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .hotel_location i {
+            margin-right: 8px;
+            color: var(--primary-orange);
+        }
+
+        .hotel_price {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: var(--primary-orange);
+            margin-bottom: 10px;
+        }
+
+        .hotel_rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .stars {
+            color: #ffc107;
+            margin-right: 10px;
+        }
+
+        .rating_text {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .hotel_features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .feature_tag {
+            background-color: var(--secondary-gray);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            color: var(--text-dark);
+        }
+
+        .book_now_btn {
+            background-color: var(--primary-orange);
+            color: var(--text-light);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            width: 100%;
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        }
+
+        .book_now_btn:hover {
+            transform: translateY(-3px); 
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        
+        .hotel_slider .hotel_card {
+            animation: fadeIn 1s ease-out forwards;
+        }
+        .hotel_slider a:nth-child(1) { animation-delay: 0.5s; }
+        .hotel_slider a:nth-child(2) { animation-delay: 0.6s; }
+        .hotel_slider a:nth-child(3) { animation-delay: 0.7s; }
+        .hotel_slider a:nth-child(4) { animation-delay: 0.8s; }
+        .hotel_slider a:nth-child(5) { animation-delay: 0.9s; }
+        .hotel_slider a:nth-child(6) { animation-delay: 1.0s; }
+
+ 
+        footer {
+            background-color: var(--primary-dark);
+            color: var(--text-light);
+            padding: 15px 0;
+            text-align: center;
+            margin-top: auto;
+        }
+        footer a {
+            color: var(--primary-orange);
+            margin: 0 5px;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+       
+        @media (max-width: 992px) {
+            .home_header, .home_main {
+                padding: 0 15px;
+            }
+            .hotel_slider {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .home_nav a {
+                margin-left: 15px;
+            }
+            .hotel_slider {
+                grid-template-columns: 1fr;
+            }
+            .page_title h1 {
+                font-size: 2em;
+            }
+        }
+        
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 15px 20px;
+  border-radius: 5px;
+  color: white;
+  z-index: 10000;
+  animation: slideIn 0.3s ease-out;
+}
+
+.notification.success { background-color: #4CAF50; }
+.notification.error { background-color: #f44336; }
+.notification.info { background-color: #2196F3; }
+
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.modal {
+  display: block;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 500px;
+  border-radius: 10px;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover { color: #000; }
+
+.booking-card {
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.food-item {
+  border: 1px solid #eee;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 5px;
+}
+
+.quantity-controls {
+  display: inline-block;
+  margin-left: 10px;
+}
+
+.quantity-controls button {
+  width: 30px;
+  height: 30px;
+  border: 1px solid #ddd;
+  background-color: #f5f5f5;
+  cursor: pointer;
+}
+
+.quantity-controls span {
+  display: inline-block;
+  width: 30px;
+  text-align: center;
+  margin: 0 5px;
+}
+
+    </style>
+</head>
+<body>
+    <header class="home_head">
+        <div class="home_header">
+            <div class="home_heading">
+                <h1>Book<span class="buddy">Buddy</span></h1>
+            </div>
+            <nav class="home_nav">
+            <div class="home_links">
+                    <a href="index.html">Home</a>
+                    <a href="home.html">Hotels</a>
+                    <a href="#" class="btn">Login</a>
+                </div>
+                </nav>
+        </div>
+    </header>
+
+    <main class="home_main">
+        <section class="page_title">
+            <h1>Discover Amazing Hotels</h1>
+            <p>Find your perfect stay in Chennai's finest accommodations</p>
+        </section>
+
+        <section class="hotel_slider">
+            <a href="book.html" class="hotel_card" data-hotel="taj-coromandel">
+                <img src="images/Coromandel.jpg" alt="Taj Coromandel">
+                <div class="hotel_info">
+                    <h3 class="hotel_name">Taj Coromandel</h3>
+                    <div class="hotel_location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Anna Salai, Chennai</span>
+                    </div>
+                    <div class="hotel_rating">
+                        <div class="stars">★★★★★</div>
+                        <span class="rating_text">4.8 (1,234 reviews)</span>
+                    </div>
+                    <div class="hotel_price">₹8,500/night</div>
+                    <div class="hotel_features">
+                        <span class="feature_tag">Luxury</span>
+                        <span class="feature_tag">Pool</span>
+                        <span class="feature_tag">Spa</span>
+                    </div>
+                    <button class="book_now_btn">View Details</button>
+                </div>
+            </a>
+
+            <a href="book.html" class="hotel_card" data-hotel="itc-hotel">
+                <img src="images/itc.webp" alt="ITC Grand Chola">
+                <div class="hotel_info">
+                    <h3 class="hotel_name">ITC Grand Chola</h3>
+                    <div class="hotel_location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Guindy, Chennai</span>
+                    </div>
+                    <div class="hotel_rating">
+                        <div class="stars">★★★★★</div>
+                        <span class="rating_text">4.7 (987 reviews)</span>
+                    </div>
+                    <div class="hotel_price">₹7,200/night</div>
+                    <div class="hotel_features">
+                        <span class="feature_tag">Business</span>
+                        <span class="feature_tag">Conference</span>
+                        <span class="feature_tag">Gym</span>
+                    </div>
+                    <button class="book_now_btn">View Details</button>
+                </div>
+            </a>
+
+            <a href="book.html" class="hotel_card" data-hotel="leela-palace">
+                    <img src="images/leela.jpg" alt="The Leela Palace">
+                <div class="hotel_info">
+                    <h3 class="hotel_name">The Leela Palace</h3>
+                    <div class="hotel_location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Adyar, Chennai</span>
+                    </div>
+                    <div class="hotel_rating">
+                        <div class="stars">★★★★★</div>
+                        <span class="rating_text">4.9 (1,456 reviews)</span>
+                    </div>
+                    <div class="hotel_price">₹9,800/night</div>
+                    <div class="hotel_features">
+                        <span class="feature_tag">Palace</span>
+                        <span class="feature_tag">Beach</span>
+                        <span class="feature_tag">Fine Dining</span>
+                    </div>
+                    <button class="book_now_btn">View Details</button>
+                </div>
+            </a>
+
+            <a href="book.html" class="hotel_card" data-hotel="radisson-blu">
+                <img src="images/radision.jpg" alt="Radisson Blu">
+                <div class="hotel_info">
+                    <h3 class="hotel_name">Radisson Blu</h3>
+                    <div class="hotel_location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Egmore, Chennai</span>
+                    </div>
+                    <div class="hotel_rating">
+                        <div class="stars">★★★★☆</div>
+                        <span class="rating_text">4.5 (756 reviews)</span>
+                    </div>
+                    <div class="hotel_price">₹5,500/night</div>
+                    <div class="hotel_features">
+                        <span class="feature_tag">Modern</span>
+                        <span class="feature_tag">City View</span>
+                        <span class="feature_tag">Restaurant</span>
+                    </div>
+                    <button class="book_now_btn">View Details</button>
+                </div>
+            </a>
+
+            <a href="book.html" class="hotel_card" data-hotel="novotel">
+                <img src="images/novotol.jpg" alt="Novotel Chennai">
+                <div class="hotel_info">
+                    <h3 class="hotel_name">Novotel Chennai</h3>
+                    <div class="hotel_location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>OMR, Chennai</span>
+                    </div>
+                    <div class="hotel_rating">
+                        <div class="stars">★★★★☆</div>
+                        <span class="rating_text">4.3 (634 reviews)</span>
+                    </div>
+                    <div class="hotel_price">₹4,200/night</div>
+                    <div class="hotel_features">
+                        <span class="feature_tag">Tech Park</span>
+                        <span class="feature_tag">Pool</span>
+                        <span class="feature_tag">WiFi</span>
+                    </div>
+                    <button class="book_now_btn">View Details</button>
+                </div>
+            </a>
+
+            <a href="book.html" class="hotel_card" data-hotel="sheraton">
+                <img src="images/sheraton.jpg" alt="Sheraton Grand">
+                <div class="hotel_info">
+                    <h3 class="hotel_name">Sheraton Grand</h3>
+                    <div class="hotel_location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>T. Nagar, Chennai</span>
+                    </div>
+                    <div class="hotel_rating">
+                        <div class="stars">★★★★☆</div>
+                        <span class="rating_text">4.4 (892 reviews)</span>
+                    </div>
+                    <div class="hotel_price">₹6,800/night</div>
+                    <div class="hotel_features">
+                        <span class="feature_tag">Shopping</span>
+                        <span class="feature_tag">Spa</span>
+                        <span class="feature_tag">Bar</span>
+                    </div>
+                    <button class="book_now_btn">View Details</button>
+                </div>
+            </a>
+
+            <a href="book.html" class="hotel_card" data-hotel="taj-connemara">
+                    <img src="images/taj.jpg" alt="Taj Connemara">
+                <div class="hotel_info">
+                    <h3 class="hotel_name">Taj Connemara</h3>
+                    <div class="hotel_location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Mount Road, Chennai</span>
+                    </div>
+                    <div class="hotel_rating">
+                        <div class="stars">★★★★★</div>
+                        <span class="rating_text">4.6 (1,123 reviews)</span>
+                    </div>
+                    <div class="hotel_price">₹5,900/night</div>
+                    <div class="hotel_features">
+                        <span class="feature_tag">Heritage</span>
+                        <span class="feature_tag">Business</span>
+                        <span class="feature_tag">Restaurant</span>
+                    </div>
+                    <button class="book_now_btn">View Details</button>
+                </div>
+            </a>
+
+            <a href="book.html" class="hotel_card" data-hotel="park-hotel">
+                    <img src="images/the park.jpg" alt="The Park">
+                <div class="hotel_info">
+                    <h3 class="hotel_name">The Park</h3>
+                    <div class="hotel_location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Anna Salai, Chennai</span>
+                    </div>
+                    <div class="hotel_rating">
+                        <div class="stars">★★★★☆</div>
+                        <span class="rating_text">4.2 (567 reviews)</span>
+                    </div>
+                    <div class="hotel_price">₹4,500/night</div>
+                    <div class="hotel_features">
+                        <span class="feature_tag">Modern</span>
+                        <span class="feature_tag">Pool</span>
+                        <span class="feature_tag">Gym</span>
+                    </div>
+                    <button class="book_now_btn">View Details</button>
+                </div>
+            </a>
+
+            <a href="book.html" class="hotel_card" data-hotel="trident">
+                <img src="images/trident.webp" alt="Trident Chennai">
+                <div class="hotel_info">
+                    <h3 class="hotel_name">Trident Chennai</h3>
+                    <div class="hotel_location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>OMR, Chennai</span>
+                    </div>
+                    <div class="hotel_rating">
+                        <div class="stars">★★★★☆</div>
+                        <span class="rating_text">4.3 (445 reviews)</span>
+                    </div>
+                    <div class="hotel_price">₹3,800/night</div>
+                    <div class="hotel_features">
+                        <span class="feature_tag">Tech</span>
+                        <span class="feature_tag">WiFi</span>
+                        <span class="feature_tag">Parking</span>
+                    </div>
+                    <button class="book_now_btn">View Details</button>
+                </div>
+            </a>
+
+            <a href="book.html" class="hotel_card" data-hotel="ramada">
+                <img src="images/ramada.jpg" alt="Ramada Chennai">
+                <div class="hotel_info">
+                    <h3 class="hotel_name">Ramada Chennai</h3>
+                    <div class="hotel_location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Egmore, Chennai</span>
+                    </div>
+                    <div class="hotel_rating">
+                        <div class="stars">★★★★☆</div>
+                        <span class="rating_text">4.1 (389 reviews)</span>
+                    </div>
+                    <div class="hotel_price">₹3,200/night</div>
+                    <div class="hotel_features">
+                        <span class="feature_tag">Budget</span>
+                        <span class="feature_tag">Clean</span>
+                        <span class="feature_tag">Friendly</span>
+                    </div>
+                    <button class="book_now_btn">View Details</button>
+                </div>
+            </a>
+
+            <a href="book.html" class="hotel_card" data-hotel="holiday-inn">
+                <img src="images/hol.webp" alt="Holiday Inn">
+                <div class="hotel_info">
+                    <h3 class="hotel_name">Holiday Inn</h3>
+                    <div class="hotel_location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>OMR, Chennai</span>
+                    </div>
+                    <div class="hotel_rating">
+                        <div class="stars">★★★★☆</div>
+                        <span class="rating_text">4.0 (298 reviews)</span>
+                    </div>
+                    <div class="hotel_price">₹2,800/night</div>
+                    <div class="hotel_features">
+                        <span class="feature_tag">Express</span>
+                        <span class="feature_tag">Quick</span>
+                        <span class="feature_tag">Value</span>
+                    </div>
+                    <button class="book_now_btn">View Details</button>
+            </div>
+            </a>
+        </section>
+    </main>
+
+    <footer>
+        <div>
+            &copy; 2025 BookBuddy. All rights reserved. | 
+            <a href="#">Privacy Policy</a> | 
+            <a href="#">Terms of Service</a>
+        </div>
+    </footer>
+
+    
+    <script src="js/api-client.js"></script>
+    <script src="js/booking-manager.js"></script>
+    <script src="js/order-manager.js"></script>
+    <script src="js/manager-tools.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+           
+            try {
+                const userRaw = localStorage.getItem('user');
+                const u = userRaw ? JSON.parse(userRaw) : null;
+                const role = (u && u.role ? String(u.role) : 'Customer').toLowerCase();
+                if (role === 'manager') {
+                    window.location.href = 'manage.html';
+                    return;
+                }
+                if (role === 'staff' || role === 'employee') {
+                    window.location.href = 'staff.html';
+                    return;
+                }
+            } catch (_) {}
+            if (api.token) {
+                console.log('User is logged in');
+                updateLoginButton();
+            } else {
+                console.log('User is not logged in');
+            }
+            
+     
+            document.querySelectorAll('.hotel_card').forEach(card => {
+                card.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const hotelId = this.getAttribute('data-hotel');
+                 
+                    localStorage.setItem('selectedHotel', hotelId);
+                    
+                    window.location.href = 'book.html';
+                });
+            });
+        });
+  
+        function updateLoginButton() {
+            const loginBtn = document.querySelector('.btn');
+            if (api.token) {
+                loginBtn.textContent = 'Dashboard';
+                loginBtn.onclick = () => {
+                   
+                    try {
+                        const u = JSON.parse(localStorage.getItem('user') || 'null');
+                        const role = (u && u.role ? String(u.role) : 'Customer').toLowerCase();
+                        if (role === 'manager') return void (window.location.href = 'manage.html');
+                        if (role === 'staff' || role === 'employee') return void (window.location.href = 'staff.html');
+                    } catch (_) {}
+                    window.location.href = 'book.html';
+                };
+            } else {
+                loginBtn.textContent = 'Login';
+                loginBtn.onclick = () => {
+                    window.location.href = 'login.html';
+                };
+            }
+        }
+        
+ 
+        function quickSearch() {
+            const searchTerm = document.getElementById('quick-search')?.value;
+            if (searchTerm) {
+                window.location.href = `book.html?search=${searchTerm}`;
+            }
+        }
+    </script>
+</body>
+</html>
